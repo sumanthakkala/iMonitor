@@ -33,6 +33,23 @@ class ViewController: NSViewController {
     static var context = appDelegate.persistentContainer.viewContext
     
     
+    
+    func savePathToCoreData(path: String, folderName: String) -> Bool{
+        let folderEntity = NSEntityDescription.entity(forEntityName: "FolderPaths", in: ViewController.context)
+        let newFolderPath = NSManagedObject(entity: folderEntity!, insertInto: ViewController.context)
+        newFolderPath.setValue(path, forKey: "folderPath")
+        newFolderPath.setValue(folderName, forKey: "folderName")
+        newFolderPath.setValue(Date(), forKey: "createdAt")
+        do{
+            try ViewController.context.save()
+            return true
+        }
+        catch{
+            return false
+        }
+    }
+    
+    
     @IBAction func chooseFileClick(_ sender: NSButton) {
         //File Panel
         let choosePanel = NSOpenPanel()
@@ -48,29 +65,16 @@ class ViewController: NSViewController {
                 //Path & Folder Name
                 let path = result!.path
                 let folderName = path.split(separator: "/").last
-                    
                 //Alert code
                 let alert = NSAlert.init()
-                
-                
-                //alert.runModal()
-                
-                
-                let folderEntity = NSEntityDescription.entity(forEntityName: "FolderPaths", in: ViewController.context)
-                let newFolderPath = NSManagedObject(entity: folderEntity!, insertInto: ViewController.context)
-                newFolderPath.setValue(path, forKey: "folderPath")
-                newFolderPath.setValue(folderName, forKey: "folderName")
-                newFolderPath.setValue(Date(), forKey: "createdAt")
-                
-                do{
-                    try ViewController.context.save()
+
+                if savePathToCoreData(path: path, folderName: (String.init(folderName ?? ""))){
                     alert.messageText = "\(String.init(folderName ?? "")) folder added successfully."
                     alert.informativeText = "Selected Path: " + path
                     alert.addButton(withTitle: "OK")
                     alert.runModal()
                     updateUITable()
-                }
-                catch{
+                } else{
                     alert.messageText = "Failed Saving"
                     alert.addButton(withTitle: "OK")
                     alert.runModal()
@@ -82,6 +86,37 @@ class ViewController: NSViewController {
         }
     }
     
+    @IBAction func pastePathTextBoxAction(_ sender: NSTextField) {
+        let path = sender.stringValue
+        
+        var isDirectory: ObjCBool = ObjCBool(false)
+        let exists: Bool = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+        if exists && isDirectory.boolValue {
+            // Exists. Directory.
+            print("Exists")
+            let folderName = path.split(separator: "/").last
+            let alert = NSAlert.init()
+            if savePathToCoreData(path: path, folderName: (String.init(folderName ?? ""))){
+                alert.messageText = "\(String.init(folderName ?? "")) folder added successfully."
+                alert.informativeText = "Selected Path: " + path
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+                updateUITable()
+            } else{
+                alert.messageText = "Failed Saving"
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+        } else {
+            // Exists.
+            print("Not Exists")
+            let alert = NSAlert.init()
+            alert.messageText = "Entered path does not exists. Please try again."
+            alert.informativeText = "Selected Path: " + path
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+        }
+    }
     
     @IBAction func removePathAction(_ sender: NSButton) {
         let path = sender.toolTip
