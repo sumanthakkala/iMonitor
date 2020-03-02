@@ -9,10 +9,12 @@
 import Cocoa
 import CoreData
 import AppKit
+import FileWatcher_macOS
 
 class ViewController: NSViewController {
 
     @objc dynamic var foldersList:[FolderPath] = []
+    dynamic var fileWatcher:FileWatcher = FileWatcher([""])
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -27,13 +29,38 @@ class ViewController: NSViewController {
     }
     override func viewDidAppear(){
         updateUITable()
+        startMonitoringFolders()
     }
     
     static var appDelegate = NSApplication.shared.delegate as! AppDelegate
     static var context = appDelegate.persistentContainer.viewContext
     
     
-    
+    func startMonitoringFolders(){
+        fileWatcher.stop()
+        var pathListAsNsString: [String] = []
+        for folder in foldersList{
+            pathListAsNsString.append(NSString(string: folder.folderPath).expandingTildeInPath)
+        }
+        fileWatcher = FileWatcher(pathListAsNsString)
+        fileWatcher.callback = { event in
+          print("Something happened here: " + event.path)
+            
+            // Create the notification and setup information
+            let notification = NSUserNotification()
+            //notification.identifier = "unique-id"
+            notification.title = "iMonitor Notification"
+            notification.subtitle = "Changes detected in the monitoring folders."
+            notification.informativeText = "Path: " + event.path
+            notification.soundName = NSUserNotificationDefaultSoundName
+            // Manually display the notification
+            let notificationCenter = NSUserNotificationCenter.default
+            notificationCenter.deliver(notification)
+        }
+
+        fileWatcher.start()
+        
+    }
     func savePathToCoreData(path: String, folderName: String) -> Bool{
         let folderEntity = NSEntityDescription.entity(forEntityName: "FolderPaths", in: ViewController.context)
         let newFolderPath = NSManagedObject(entity: folderEntity!, insertInto: ViewController.context)
@@ -74,6 +101,8 @@ class ViewController: NSViewController {
                     alert.addButton(withTitle: "OK")
                     alert.runModal()
                     updateUITable()
+                    startMonitoringFolders()
+                    
                 } else{
                     alert.messageText = "Failed Saving"
                     alert.addButton(withTitle: "OK")
@@ -102,6 +131,7 @@ class ViewController: NSViewController {
                 alert.addButton(withTitle: "OK")
                 alert.runModal()
                 updateUITable()
+                startMonitoringFolders()
             } else{
                 alert.messageText = "Failed Saving"
                 alert.addButton(withTitle: "OK")
@@ -129,6 +159,7 @@ class ViewController: NSViewController {
             }
             try ViewController.context.save()
             updateUITable()
+            startMonitoringFolders()
         }
         catch{
             print("Failed Delete")

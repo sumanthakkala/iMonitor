@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BD603C03240D733000861A0A /* FileWatcher_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD603C02240D733000861A0A /* FileWatcher_macOS.framework */; };
+		BD603C04240D733000861A0A /* FileWatcher_macOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BD603C02240D733000861A0A /* FileWatcher_macOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BD995634240893BB005AA319 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD995633240893BB005AA319 /* AppDelegate.swift */; };
 		BD995636240893BB005AA319 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD995635240893BB005AA319 /* ViewController.swift */; };
 		BD995639240893BB005AA319 /* iMonitor.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BD995637240893BB005AA319 /* iMonitor.xcdatamodeld */; };
@@ -15,7 +17,22 @@
 		BD9956472408A6C0005AA319 /* FolderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9956462408A6C0005AA319 /* FolderPath.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		BD603C05240D733000861A0A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BD603C04240D733000861A0A /* FileWatcher_macOS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		BD603C02240D733000861A0A /* FileWatcher_macOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FileWatcher_macOS.framework; path = Carthage/Build/Mac/FileWatcher_macOS.framework; sourceTree = "<group>"; };
 		BD995630240893BB005AA319 /* iMonitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD995633240893BB005AA319 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BD995635240893BB005AA319 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -32,17 +49,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD603C03240D733000861A0A /* FileWatcher_macOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BD603C01240D733000861A0A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BD603C02240D733000861A0A /* FileWatcher_macOS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BD995627240893BB005AA319 = {
 			isa = PBXGroup;
 			children = (
 				BD995632240893BB005AA319 /* iMonitor */,
 				BD995631240893BB005AA319 /* Products */,
+				BD603C01240D733000861A0A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +106,7 @@
 				BD99562C240893BB005AA319 /* Sources */,
 				BD99562D240893BB005AA319 /* Frameworks */,
 				BD99562E240893BB005AA319 /* Resources */,
+				BD603C05240D733000861A0A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -282,6 +310,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = Y88GS2HUZY;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = iMonitor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -302,6 +334,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = Y88GS2HUZY;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = iMonitor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
